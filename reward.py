@@ -1,23 +1,31 @@
+
+"""
+
+The Basic Reward Function
+
+We briefly covered the reward function in the last video, but let’s take another look at how our basic reward function behaves.
+
+
+"""
+
+
 def reward_function(params):
     '''
-    Example of penalize steering, which helps mitigate zig-zag behaviors
+    Example of rewarding the agent to follow center line
     '''
-    
+
     # Read input parameters
-    distance_from_center = params['distance_from_center']
     track_width = params['track_width']
-    steering = abs(params['steering_angle']) # Only need the absolute steering angle
-    progress = abs(params['progress'])
-    waypoints = params['waypoints']
+    distance_from_center = params['distance_from_center']
 
     # Calculate 3 markers that are at varying distances away from the center line
     marker_1 = 0.1 * track_width
     marker_2 = 0.25 * track_width
     marker_3 = 0.5 * track_width
 
-    # Give higher reward if the agent is closer to center line and vice versa
+    # Give higher reward if the car is closer to center line and vice versa
     if distance_from_center <= marker_1:
-        reward = 1
+        reward = 1.0
     elif distance_from_center <= marker_2:
         reward = 0.5
     elif distance_from_center <= marker_3:
@@ -25,17 +33,14 @@ def reward_function(params):
     else:
         reward = 1e-3  # likely crashed/ close to off track
 
-    # Steering penality threshold, change the number based on your action space setting
-    ABS_STEERING_THRESHOLD = 15
-
-    # Penalize reward if the agent is steering too much
-    if steering > ABS_STEERING_THRESHOLD:
-        reward *= 0.5
-    # reward for finishing the track
-    if progress == 100:
-        reward = 1000
-        
-    # print waypoints for local plotting
-    print(*waypoints, sep=',')
-    
     return float(reward)
+
+
+
+    In the above code, we first gather the parameters for track width and the distance from the center line (we’ll discuss all the parameters available to you in more detail later). Then, we create three markers based off of the track width - one at 10% of the track width, another at 25% width, and the last at half of the track width.
+
+From there, it’s a simple if/else statement that gives different, decreasing rewards based on the vehicle being within a given marker or not. If it is outside all three markers, notice that the reward is almost effectively zero.
+
+While we’ll go much more in-depth with reward functions later on, what changes do you think might be helpful to the above reward function in future iterations?
+
+
